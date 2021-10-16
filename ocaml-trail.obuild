@@ -1,0 +1,12 @@
+name: ocaml-trail
+version: 0.0.1
+description: CS 3110 FA21 Final Project
+licence: MIT
+authors: 1
+obuild-ver: 1
+homepage: https://github.com/hanahhleee/ocaml-trail
+
+executable ocaml-trail
+  main-is: main.ml
+  src-dir: src
+  buildDepends: lablgl, lablgl.glut
