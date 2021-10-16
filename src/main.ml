@@ -1,5 +1,3 @@
-open Glut
-
 let initDisplay ~w ~h ~title =
   Glut.initDisplayMode ~double_buffer:true ~depth:true ~alpha:true ();
   Glut.initWindowSize ~w ~h;
