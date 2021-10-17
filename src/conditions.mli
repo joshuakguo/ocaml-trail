@@ -46,3 +46,6 @@ val clothes : int
 val parts : int
 (** [parts] is the number of caravan parts the player has. Requires:
     [parts] >= 0. *)
+
+val dead : bool
+(** [dead] is true if player's health is <= 0, false otherwise. *)
