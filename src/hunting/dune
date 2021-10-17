@@ -1,0 +1,4 @@
+(library
+ (name hunting)
+ (public_name Hunting)
+ (libraries lablgl lablTk lablgl.glut))
