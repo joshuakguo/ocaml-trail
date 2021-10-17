@@ -1,10 +1,10 @@
-# dune build
+# dune exec bin/main.exe
 # OCAMLPARAM: unset
 # Workspace root: /Users/joshuaguo/Documents/ocaml-trail
-$ /usr/local/bin/nproc > /var/folders/s2/jt5hfsyj5_g83yjmjjyv0mcm0000gn/T/duneee2122.output 2> /dev/null
+$ /usr/local/bin/nproc > /var/folders/s2/jt5hfsyj5_g83yjmjjyv0mcm0000gn/T/duned1c13b.output 2> /dev/null
 # Auto-detected concurrency: 12
 # disable binary cache
-$ /Users/joshuaguo/.opam/cs3110-project/bin/ocamlc.opt -config > /var/folders/s2/jt5hfsyj5_g83yjmjjyv0mcm0000gn/T/dune58f97a.output
+$ /Users/joshuaguo/.opam/cs3110-project/bin/ocamlc.opt -config > /var/folders/s2/jt5hfsyj5_g83yjmjjyv0mcm0000gn/T/dune81bbaf.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -115,3 +115,4 @@ $ /Users/joshuaguo/.opam/cs3110-project/bin/ocamlc.opt -config > /var/folders/s2
 #      ; windows_unicode = false
 #      }
 #  }
+# Workspace root: /Users/joshuaguo/Documents/ocaml-trail
