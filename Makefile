@@ -6,7 +6,6 @@ clean:
 
 start:
 	dune exec bin/main.exe
-	dune clean
 
 install-deps:
 	opam install lablTk
