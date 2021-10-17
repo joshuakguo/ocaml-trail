@@ -12,4 +12,5 @@
 
   1. Install XQuartz https://www.xquartz.org/
   2. Run 'make install-deps' to install the required Dependencies
+  3. 'make build' to build the executable
   3. 'make start' to start the game
