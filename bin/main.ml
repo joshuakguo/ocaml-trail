@@ -1,7 +1,7 @@
 let init_display ~w ~h ~title =
   Glut.initDisplayMode ~double_buffer:true ~depth:true ~alpha:true ();
   Glut.initWindowSize ~w ~h;
-  ignore (Glut.createWindow ~title);
+  ignore @@ Glut.createWindow ~title;
   Glut.idleFunc ~cb:(Some Glut.postRedisplay)
 
 let init_view ~w ~h =

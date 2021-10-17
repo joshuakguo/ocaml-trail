@@ -1,6 +1,7 @@
 1. 
 
 2. Dependencies
+  GLUT
   XQuartz
   lablTk
   lablgl
@@ -12,5 +13,6 @@
 
   1. Install XQuartz https://www.xquartz.org/
   2. Run 'make install-deps' to install the required dependencies
-  3. 'make build' to build the executable
-  3. 'make start' to start the game
+  3. If a version of GLUT isn't already installed, use Homebrew to install FreeGLUT with 'brew install freeglut'
+  4. 'make build' to build the executable
+  5. 'make start' to start the game
