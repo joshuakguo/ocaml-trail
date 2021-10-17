@@ -1,5 +1,5 @@
 val length : int
 
-val start : 
+val start : int
 
-val end :
+val nd : int

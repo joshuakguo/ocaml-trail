@@ -1,0 +1,4 @@
+(library
+ (name crossing)
+ (public_name Crossing)
+ (libraries lablgl lablTk lablgl.glut))

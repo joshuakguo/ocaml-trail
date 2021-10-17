@@ -3,6 +3,10 @@
     This module represents the status of the player. It handles the
     updating of each condition. *)
 
+type t
+(** [money] is the amount of money the player has. Requires: [money] >=
+    0. *)
+
 val money : int
 (** [money] is the amount of money the player has. Requires: [money] >=
     0. *)
