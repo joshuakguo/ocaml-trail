@@ -46,8 +46,12 @@ let init () =
 
 let render_crossing game =
   GlClear.clear [ `color ];
+  (* [GlClear.clear] needed before every render function to clear the
+     background color *)
   Crossing.Caravan.render game.caravan;
   Glut.swapBuffers ()
+(* I don't actually know what [Glut.swapBuffers] does. I think we need
+   it after every render though. *)
 
 let render game =
   match game.game_state with
