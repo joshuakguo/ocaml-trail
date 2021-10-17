@@ -12,10 +12,10 @@ let collision_area obstacle =
 let render_caravan_at ~x ~y =
   GlMat.load_identity ();
   GlMat.translate3 (x, y, 0.);
-  GlDraw.color (1., 1., 1.);
+  GlDraw.color (0.3, 0.5, 0.7);
   GlDraw.begins `quads;
   List.iter GlDraw.vertex2
-    [ (-1., -1.); (1., -1.); (1., 1.); (-1., 1.) ];
+    [ (-50., -20.); (50., -20.); (50., 20.); (-50., 20.) ];
   GlDraw.ends ()
 
 let render caravan = render_caravan_at ~x:caravan.x ~y:caravan.y

@@ -44,7 +44,10 @@ let init () =
     dead = false;
   }
 
-let render_crossing game = Crossing.Caravan.render game.caravan
+let render_crossing game =
+  GlClear.clear [ `color ];
+  Crossing.Caravan.render game.caravan;
+  Glut.swapBuffers ()
 
 let render game =
   match game.game_state with

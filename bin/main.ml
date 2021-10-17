@@ -14,11 +14,11 @@ let init_view ~w ~h =
 let init_engine ~game ~w ~h =
   init_display ~w ~h ~title:"OCaml Trail";
   init_view ~w ~h;
-  Glut.displayFunc ~cb:(fun () -> Game.Game.render !game);
+  Glut.displayFunc ~cb:(fun () -> Gamea.Game.render !game);
   Glut.mainLoop
 
 let () =
   ignore @@ Glut.init ~argv:Sys.argv;
-  let game = ref (Game.Game.init ()) in
+  let game = ref (Gamea.Game.init ()) in
   let run = init_engine ~game ~w:500 ~h:500 in
   run ()

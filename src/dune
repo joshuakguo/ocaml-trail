@@ -1,5 +1,4 @@
 (library
- (name game)
- (public_name Game)
- (libraries Crossing Hunting lablgl lablTk lablgl.glut)
- (wrapped false))
+ (name gamea)
+ (public_name Gamea)
+ (libraries Crossing Hunting lablgl lablTk lablgl.glut))
