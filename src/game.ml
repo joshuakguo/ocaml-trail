@@ -1,9 +1,6 @@
-type gameState =
-  | Home
-  | Trail
-  | Hunting
+type gameState = (* | Home | Trail | Hunting *)
   | Crossing
-  | End
+(* | End *)
 
 type game = {
   game_state : gameState;
@@ -22,14 +19,16 @@ type game = {
   dead : bool;
 }
 
-type profile =
-  | Farmer of game
-  | Carpenter of game
-  | Banker of game
+(* type profile = | Farmer of game | Carpenter of game | Banker of
+   game *)
+
+let caravan =
+  let open Crossing.Caravan in
+  { x = 225.; y = 50. }
 
 let init () =
   {
-    game_state = Home;
+    game_state = Crossing;
     caravan;
     money = 0;
     days_passed = 0;
@@ -45,8 +44,9 @@ let init () =
     dead = false;
   }
 
-let render_crossing game = Caravan.render game.caravan
+let render_crossing game = Crossing.Caravan.render game.caravan
 
 let render game =
   match game.game_state with
-  | _ -> render_crossing game
+  | Crossing -> render_crossing game
+(* | _ -> render_crossing game *)
