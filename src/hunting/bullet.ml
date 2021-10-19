@@ -21,7 +21,7 @@ let approach ~pace =
   let y = pace in
   fun bullet ->
     bullet.y <- bullet.y +. y;
-    bullet.x <- bullet.x;
+    (* bullet.x <- bullet.x; *)
     bullet
 
 let render bullet = render_bullet_at ~x:bullet.x ~y:bullet.y

@@ -3,11 +3,11 @@ type animal = {
   mutable y : float;
 }
 
-let out_of_bound ~bounds =
-  let x1, y1, x2, y2 = bounds in
-  fun (x, y) -> x < x1 || x > x2 || y < y1 || y > y2
-
 let in_bound ~bounds =
+  let out_of_bound ~bounds =
+    let x1, y1, x2, y2 = bounds in
+    fun (x, y) -> x < x1 || x > x2 || y < y1 || y > y2
+  in
   let check = out_of_bound ~bounds in
   fun animal -> not @@ check (animal.x, animal.y)
 

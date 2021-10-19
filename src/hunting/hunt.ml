@@ -26,8 +26,8 @@ let controller game = function
       game.shooter.x <- min (max coord 10.) 440.;
       game
   | Shoot ->
-      game.bullet.x <- game.shooter.x;
-      game.bullet.y <- game.shooter.y;
+      let pace = 10. in
+      Bullet.approach ~pace game.bullet;
       game
   | MoveBullet ->
       Bullet.move game.bullet;
