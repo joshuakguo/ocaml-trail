@@ -34,11 +34,14 @@ let controller game = function
       game
 (* | Collisions -> *)
 
-let key_to_action ~key ~x ~y =
+let key_to_action ~key =
   match key with
   | Glut.KEY_LEFT -> Some (Move Left)
   | Glut.KEY_RIGHT -> Some (Move Right)
   | _ -> None
+
+(* let cross_ticker (game : Cross) = match game.over with | true -> Some
+   (* close window render? *) | false -> render game *)
 
 let render game =
   Caravan.render game.caravan;

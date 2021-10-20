@@ -19,7 +19,7 @@ let render_shooter_at ~x ~y =
   GlDraw.color (0.51, 1., 0.);
   GlDraw.begins `quads;
   List.iter GlDraw.vertex2
-    [ (-2., -2.); (-2., 2.); (2., 2.); (2., -2.) ];
+    [ (-20., -20.); (-20., 20.); (20., 20.); (20., -20.) ];
   GlDraw.ends ()
 
 let render shooter = render_shooter_at ~x:shooter.x ~y:shooter.y

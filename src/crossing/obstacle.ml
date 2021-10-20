@@ -1,5 +1,3 @@
-(* type size = ? *)
-
 type obstacle = {
   mutable x : float;
   mutable y : float;
@@ -15,16 +13,20 @@ let approach ~pace =
   let y = pace in
   fun obstacle ->
     obstacle.y <- obstacle.y -. y;
-    obstacle.x <- obstacle.x;
+    (* obstacle.x <- obstacle.x; *)
     obstacle
 
-let render_rock () =
-  GlDraw.color (0.5, 0.5, 0.5);
+let render_obstacle_at ~x ~y () =
+  GlMat.load_identity ();
+  GlMat.translate3 (x, y, 0.);
   GlDraw.begins `triangles;
-  List.iter GlDraw.vertex2 [ (-1., -1.); (1., -1.); (0., 1.) ];
+  GlDraw.color (0.5, 0.5, 0.5);
+  List.iter GlDraw.vertex2 [ (-30., -30.); (30., -30.); (30., 30.) ];
+  GlDraw.color (0.7, 0.7, 0.7);
+  List.iter GlDraw.vertex2 [ (-15., -30.); (30., -20.); (30., 36.) ];
   GlDraw.ends ()
 
-let render_obstacle obstacle =
+let render obstacle =
   GlMat.load_identity ();
   GlMat.translate3 (obstacle.x, obstacle.y, 0.);
-  render_rock ()
+  render_obstacle_at ~x:obstacle.x ~y:obstacle.y ()

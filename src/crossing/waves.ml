@@ -5,7 +5,9 @@ type wave = {
 
 let approach ~pace =
   let y = pace in
-  fun wave -> wave.y -. y wave
+  fun wave ->
+    wave.y <- wave.y -. y;
+    wave
 
 let render_wave () =
   GlDraw.color (0., 0.5, 1.);
