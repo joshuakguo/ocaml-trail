@@ -5,21 +5,21 @@ type game_state =
 (* | End *)
 
 type game = {
-  game_state : game_state;
-  crossing : Crossing.Cross.cross;
-  hunt : Hunting.Hunt.hunt;
-  money : int;
-  days_passed : int;
-  miles_traveled : int;
-  pace : int;
-  health : int;
-  camels : int;
-  food : int;
-  ration : int;
-  ammo : int;
-  clothes : int;
-  parts : int;
-  dead : bool;
+  mutable game_state : game_state;
+  mutable crossing : Crossing.Cross.cross;
+  mutable hunt : Hunting.Hunt.hunt;
+  mutable money : int;
+  mutable days_passed : int;
+  mutable miles_traveled : int;
+  mutable pace : int;
+  mutable health : int;
+  mutable camels : int;
+  mutable food : int;
+  mutable ration : int;
+  mutable ammo : int;
+  mutable clothes : int;
+  mutable parts : int;
+  mutable dead : bool;
 }
 
 (* type profile = | Farmer of game | Carpenter of game | Banker of
@@ -42,6 +42,7 @@ let bullets lst ammo =
 let bullet_list =
   let open Hunting.Bullet in
   bullets [ { x = 250.; y = 450. } ] 10
+(*random number of bullets*)
 
 let hunt =
   let open Hunting.Hunt in
@@ -104,19 +105,28 @@ let render_crossing game =
 (* I don't actually know what [Glut.swapBuffers] does. I think we need
    it after every render though. *)
 
-let crossing_key_to_action ~key =
-  match key with
-  | Glut.KEY_LEFT -> Some (Crossing.Cross.Move Left)
-  | Glut.KEY_RIGHT -> Some (Crossing.Cross.Move Right)
-  | _ -> None
+(* let crossing_key_to_action ~key ~x ~y = match key with |
+   Glut.KEY_LEFT -> Some (Crossing.Cross.Move Left) | Glut.KEY_RIGHT ->
+   Some (Crossing.Cross.Move Right) | _ -> None
 
-let crossing_controller game fun_action ~key =
-  match fun_action ~key with
-  | Some action -> game := Crossing.Cross.controller !game action
-  | None -> ()
+   let crossing_controller game fun_action ~key ~x ~y = match fun_action
+   ~key ~x ~y with | Some action -> game := Crossing.Cross.controller
+   !game action | None -> () *)
+
+let crossing_action ~key ~x:_ ~y:_ game =
+  match key with
+  | Glut.KEY_LEFT ->
+      game.crossing <-
+        Crossing.Cross.controller game.crossing
+          (Crossing.Cross.Move Left)
+  | Glut.KEY_RIGHT ->
+      game.crossing <-
+        Crossing.Cross.controller game.crossing
+          (Crossing.Cross.Move Right)
+  | _ -> ()
 
 let init_crossing_inputs ~game =
-  Glut.specialFunc ~cb:(crossing_controller game crossing_key_to_action)
+  Glut.specialFunc ~cb:(crossing_action game)
 
 let render game =
   match game.game_state with

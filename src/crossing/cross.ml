@@ -24,7 +24,7 @@ let controller game = function
         | Right -> ( +. )
       in
       let coord = operator game.caravan.x 10. in
-      game.caravan.x <- min (max coord 10.) 440.;
+      game.caravan.x <- min (max coord 10.) 800.;
       game
   | ScrollObstacles ->
       let pace = -10. in
@@ -34,11 +34,8 @@ let controller game = function
       game
 (* | Collisions -> *)
 
-let key_to_action ~key =
-  match key with
-  | Glut.KEY_LEFT -> Some (Move Left)
-  | Glut.KEY_RIGHT -> Some (Move Right)
-  | _ -> None
+(* let key_to_action ~key = match key with | Glut.KEY_LEFT -> Some (Move
+   Left) | Glut.KEY_RIGHT -> Some (Move Right) | _ -> None *)
 
 (* let cross_ticker (game : Cross) = match game.over with | true -> Some
    (* close window render? *) | false -> render game *)

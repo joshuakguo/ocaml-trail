@@ -11,7 +11,7 @@ let in_bound ~bounds =
   let check = out_of_bound ~bounds in
   fun shooter -> not @@ check (shooter.x, shooter.y)
 
-let move shooter = shooter.x <- shooter.x -. 8.
+(* let move shooter x = shooter.x <- shooter.x -. x *)
 
 let render_shooter_at ~x ~y =
   GlMat.load_identity ();

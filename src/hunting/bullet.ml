@@ -14,7 +14,8 @@ let in_bound ~bounds =
   let check = out_of_bound ~bounds in
   fun bullet -> not @@ check (bullet.x, bullet.y)
 
-let move bullet = bullet.y <- bullet.y -. 8.
+(* let approach ~pace = let y = pace in fun bullet -> bullet.y <-
+   bullet.y -. y; bullet *)
 
 let render_bullet_at ~x ~y =
   GlMat.load_identity ();
@@ -25,7 +26,10 @@ let render_bullet_at ~x ~y =
     [ (-5., -5.); (-5., 5.); (5., 5.); (5., -5.) ];
   GlDraw.ends ()
 
-(* let approach ~pace = let y = pace in fun bullet -> bullet.y <-
-   bullet.y +. y; bullet *)
+let approach ~pace =
+  let y = pace in
+  fun bullet ->
+    bullet.y <- bullet.y +. y;
+    bullet
 
 let render bullet = render_bullet_at ~x:bullet.x ~y:bullet.y
