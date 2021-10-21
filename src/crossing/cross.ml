@@ -23,11 +23,11 @@ let controller game = function
         | Left -> ( -. )
         | Right -> ( +. )
       in
-      let coord = operator game.caravan.x 10. in
+      let coord = operator game.caravan.x 30. in
       game.caravan.x <- min (max coord 10.) 800.;
       game
   | ScrollObstacles ->
-      let pace = -10. in
+      let pace = 20. in
       let approach_obstacles = Obstacle.approach ~pace in
       game.obstacle_list <-
         List.map approach_obstacles game.obstacle_list;
@@ -40,6 +40,12 @@ let controller game = function
 (* let cross_ticker (game : Cross) = match game.over with | true -> Some
    (* close window render? *) | false -> render game *)
 
+(* let background_render = GlMat.load_identity (); GlMat.translate3
+   (400., 275., 0.); GlDraw.color (0.2, 0.4, 1.); GlDraw.begins `quads;
+   List.iter GlDraw.vertex2 [ (-300., -200.); (300., 200.); (-300.,
+   200.); (300., -200.) ]; GlDraw.ends () *)
+
 let render game =
   Caravan.render game.caravan;
+  (* background_render; *)
   List.iter Obstacle.render game.obstacle_list

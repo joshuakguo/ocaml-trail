@@ -3,16 +3,6 @@ type shooter = {
   y : float;
 }
 
-let out_of_bound ~bounds =
-  let x1, y1, x2, y2 = bounds in
-  fun (x, y) -> x < x1 || x > x2 || y < y1 || y > y2
-
-let in_bound ~bounds =
-  let check = out_of_bound ~bounds in
-  fun shooter -> not @@ check (shooter.x, shooter.y)
-
-(* let move shooter x = shooter.x <- shooter.x -. x *)
-
 let render_shooter_at ~x ~y =
   GlMat.load_identity ();
   GlMat.translate3 (x, y, 0.);

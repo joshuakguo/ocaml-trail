@@ -2,35 +2,21 @@ type hunt = {
   mutable over : bool;
   mutable shooter : Shooter.shooter;
   mutable bullet_list : Bullet.bullet list;
-      (* mutable animal_list : Animals.animal list; *)
+  mutable animal_list : Animals.animal list;
 }
 
 type direction =
   | Left
   | Right
 
-type shoot = Shot
-
 type event =
   | MoveShooter of direction
+  | Shoot
   | Bullet
-
-(* | Shoot *)
-(* | MoveAnimal | Collision *)
+  | MoveAnimal
+(* | Collision *)
 
 exception NoBullets
-
-(* let remove_hd lst = match lst with | [] -> [] | _ :: t -> t *)
-
-let move_bullet = function
-  | [] -> raise NoBullets
-  | h :: _ ->
-      if Bullet.in_bound ~bounds:(0., 0., 1000., 1000.) h then
-        Bullet.approach ~pace:(-10.) h
-      else Bullet.approach ~pace:0. h
-
-(* let remove_bullet lst = match lst with | [] -> raise NoBullets | _ ::
-   t -> t *)
 
 let controller game = function
   | MoveShooter direction ->
@@ -39,21 +25,29 @@ let controller game = function
         | Left -> ( -. )
         | Right -> ( +. )
       in
-      let coord = operator game.shooter.x 10. in
-      if Shooter.in_bound ~bounds:(0., 0., 1000., 1000.) game.shooter
-      then game.shooter.x <- min (max coord 10.) 440.
-      else game.shooter.x <- game.shooter.x;
+      let coord = operator game.shooter.x 20. in
+      game.shooter.x <- min (max coord 10.) 800.;
       game
-  | Bullet -> (
-      (* move_bullet game.bullet_list; *)
-      match game.bullet_list with
-      | [] -> raise NoBullets
-      | _ :: t ->
-          game.bullet_list <- t;
-          game)
-(* | MoveAnimal -> | Collision -> *)
+  | Shoot ->
+      game.bullet_list <-
+        game.bullet_list
+        @ [ { x = game.shooter.x; y = game.shooter.y } ];
+      game
+  | Bullet ->
+      let bullets = List.map Bullet.move game.bullet_list in
+      game.bullet_list <-
+        List.filter
+          (Bullet.in_bound ~bounds:(0., 0., 700., 700.))
+          bullets;
+      game
+  | MoveAnimal ->
+      let pace = 20. in
+      let approach_animal = Animals.approach ~pace in
+      game.animal_list <- List.map approach_animal game.animal_list;
+      game
+(* | Collision -> *)
 
 let render game =
   Shooter.render game.shooter;
-  List.iter Bullet.render game.bullet_list
-(* Animals.render game.animal *)
+  List.iter Bullet.render game.bullet_list;
+  List.iter Animals.render game.animal_list
