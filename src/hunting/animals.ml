@@ -1,7 +1,10 @@
 type animal = {
   mutable x : float;
-  mutable y : float;
+  y : float;
 }
+
+let collision_area animal = (animal.x -. 10., animal.y -. 7.,
+   animal.x +. 10., animal.y +. 7.)
 
 let approach ~pace =
   let x = pace in

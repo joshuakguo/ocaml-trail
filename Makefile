@@ -10,3 +10,7 @@ start:
 install-deps:
 	opam install lablTk
 	opam install lablgl
+
+zip:
+	rm -f ocaml-trail.zip
+	zip -r ocaml-trail.zip . -x@exclude.lst

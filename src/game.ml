@@ -19,7 +19,7 @@ type game = {
   mutable ammo : int;
   mutable clothes : int;
   mutable parts : int;
-  mutable dead : bool;
+  mutable dead : bool; (* mutable kill : int; *)
 }
 
 (* type profile = | Farmer of game | Carpenter of game | Banker of
@@ -28,7 +28,7 @@ type game = {
 (* let obstacle_list = let open Crossing.Obstacle in [ { x = 100.; y =
    300. }; { x = 400.; y = 250. } ] *)
 
-let shooter =
+let shooter : Hunting.Shooter.shooter =
   let open Hunting.Shooter in
   { x = 400.; y = 480. }
 
@@ -41,7 +41,7 @@ let bullets lst ammo =
 
 let bullet_list =
   let open Hunting.Bullet in
-  bullets [ { x = shooter.x; y = shooter.y } ] 100
+  bullets [ { x = shooter.x; y = shooter.y } ] 1000
 (*random number of bullets*)
 
 let rec init_animals x : Hunting.Animals.animal list =
@@ -54,9 +54,16 @@ let rec init_animals x : Hunting.Animals.animal list =
       { x = -10000. +. float 10700.; y = 0. +. float 400. }
       :: init_animals (x - 1)
 
-let hunt =
+let hunt : Hunting.Hunt.hunt =
   let open Hunting.Hunt in
-  { over = false; shooter; bullet_list; animal_list = init_animals 100 }
+  {
+    over = false;
+    shooter;
+    bullet_list;
+    animal_list = init_animals 100;
+    kill = 0;
+    ammo = 1000
+  }
 
 let rec init_obstacles x : Crossing.Obstacle.obstacle list =
   let open Random in
@@ -65,10 +72,10 @@ let rec init_obstacles x : Crossing.Obstacle.obstacle list =
   match x with
   | 0 -> []
   | _ ->
-      { x = -30. +. float 750.; y = 1000. -. float 750. }
+      { x = -20. +. float 750.; y = 1000. -. float 750. }
       :: init_obstacles (x - 1)
 
-let caravan =
+let caravan : Crossing.Caravan.caravan =
   let open Crossing.Caravan in
   { x = 400.; y = 100. }
 
@@ -79,6 +86,7 @@ let crossing =
 let init () =
   {
     game_state = Hunting;
+    (* game_state = Crossing; *)
     crossing;
     money = 0;
     days_passed = 0;
@@ -92,6 +100,7 @@ let init () =
     clothes = 0;
     parts = 0;
     dead = false;
+    (* kill = 0; *)
     hunt;
   }
 
@@ -137,6 +146,11 @@ let rec bullet_ticker (game : game) ~value:_ =
   game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet;
   Glut.timerFunc ~ms:50 ~cb:(bullet_ticker game) ~value:0
 
+let rec animal_coll_ticker (game : game) ~value:_ =
+    game.hunt <-
+      Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
+    Glut.timerFunc ~ms:100 ~cb:(animal_coll_ticker game) ~value:0
+
 let init_hunt ~game =
   Glut.specialFunc ~cb:(hunt_action game);
   Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0;
@@ -166,11 +180,17 @@ let rec obstacle_ticker (game : game) ~value:_ =
   game.crossing <-
     Crossing.Cross.controller game.crossing
       Crossing.Cross.ScrollObstacles;
-  Glut.timerFunc ~ms:500 ~cb:(obstacle_ticker game) ~value:0
+  Glut.timerFunc ~ms:20 ~cb:(obstacle_ticker game) ~value:0
+
+let rec collision_ticker (game : game) ~value:_ =
+  game.crossing <-
+    Crossing.Cross.controller game.crossing Crossing.Cross.Collisions;
+  Glut.timerFunc ~ms:10 ~cb:(collision_ticker game) ~value:0
 
 let init_crossing ~game =
   Glut.specialFunc ~cb:(crossing_action game);
-  Glut.timerFunc ~ms:500 ~cb:(obstacle_ticker game) ~value:0
+  Glut.timerFunc ~ms:20 ~cb:(obstacle_ticker game) ~value:0;
+  Glut.timerFunc ~ms:10 ~cb:(collision_ticker game) ~value:0
 
 let render game =
   match game.game_state with

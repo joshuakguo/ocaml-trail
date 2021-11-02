@@ -4,10 +4,10 @@ type caravan = {
 }
 
 let collision_area obstacle =
-  ( obstacle.x -. 5.,
-    obstacle.x +. 5.,
-    obstacle.y -. 5.,
-    obstacle.y +. 5. )
+  ( obstacle.x -. 40.,
+    obstacle.x +. 40.,
+    obstacle.y -. 20.,
+    obstacle.y +. 20. )
 
 let render_caravan_at ~x ~y =
   (* background *)
@@ -36,3 +36,4 @@ let render_caravan_at ~x ~y =
   GlDraw.ends ()
 
 let render caravan = render_caravan_at ~x:caravan.x ~y:caravan.y
+
