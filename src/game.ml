@@ -62,7 +62,8 @@ let hunt : Hunting.Hunt.hunt =
     bullet_list;
     animal_list = init_animals 100;
     kill = 0;
-    ammo = 1000
+    ammo = 1000;
+    food = 0;
   }
 
 let rec init_obstacles x : Crossing.Obstacle.obstacle list =
@@ -85,8 +86,8 @@ let crossing =
 
 let init () =
   {
-    game_state = Hunting;
-    (* game_state = Crossing; *)
+    (* game_state = Hunting; *)
+    game_state = Crossing;
     crossing;
     money = 0;
     days_passed = 0;

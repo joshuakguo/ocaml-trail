@@ -11,6 +11,7 @@ type hunt = {
   mutable animal_list : Animals.animal list;
   mutable kill : int;
   mutable ammo : int;
+  mutable food : int;
 }
 (** The type of values representing the hunting mini-game. *)
 
