@@ -5,19 +5,16 @@ type caravan = {
 
 let collision_area obstacle =
   ( obstacle.x -. 40.,
-    obstacle.x +. 40.,
     obstacle.y -. 20.,
+    obstacle.x +. 40.,
     obstacle.y +. 20. )
 
 let render_caravan_at ~x ~y =
   (* background *)
-  GlMat.load_identity ();
-  GlMat.translate3 (400., 262.5, 0.);
-  GlDraw.color (0.2, 0.4, 1.);
-  GlDraw.begins `quads;
-  List.iter GlDraw.vertex2
-    [ (-400., -262.5); (-400., 262.5); (400., 262.5); (400., -262.5) ];
-  GlDraw.ends ();
+  (* GlMat.load_identity (); GlMat.translate3 (400., 262.5, 0.);
+     GlDraw.color (0.2, 0.4, 1.); GlDraw.begins `quads; List.iter
+     GlDraw.vertex2 [ (-400., -262.5); (-400., 262.5); (400., 262.5);
+     (400., -262.5) ]; GlDraw.ends (); *)
 
   (* ship *)
   GlMat.load_identity ();
@@ -36,4 +33,3 @@ let render_caravan_at ~x ~y =
   GlDraw.ends ()
 
 let render caravan = render_caravan_at ~x:caravan.x ~y:caravan.y
-

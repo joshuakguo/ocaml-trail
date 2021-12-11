@@ -19,14 +19,11 @@ type game = {
   mutable ammo : int;
   mutable clothes : int;
   mutable parts : int;
-  mutable dead : bool; (* mutable kill : int; *)
+  mutable dead : bool;
 }
 
 (* type profile = | Farmer of game | Carpenter of game | Banker of
    game *)
-
-(* let obstacle_list = let open Crossing.Obstacle in [ { x = 100.; y =
-   300. }; { x = 400.; y = 250. } ] *)
 
 let shooter : Hunting.Shooter.shooter =
   let open Hunting.Shooter in
@@ -39,10 +36,9 @@ let bullets lst ammo =
   in
   List.rev (helper [] ammo)
 
-let bullet_list =
+let init_bullets ammo =
   let open Hunting.Bullet in
-  bullets [ { x = shooter.x; y = shooter.y } ] 1000
-(*random number of bullets*)
+  bullets [ { x = shooter.x; y = shooter.y } ] ammo
 
 let rec init_animals x : Hunting.Animals.animal list =
   let open Random in
@@ -51,7 +47,7 @@ let rec init_animals x : Hunting.Animals.animal list =
   match x with
   | 0 -> []
   | _ ->
-      { x = -10000. +. float 10700.; y = 0. +. float 400. }
+      { x = -20000. +. float 20700.; y = 0. +. float 400. }
       :: init_animals (x - 1)
 
 let hunt : Hunting.Hunt.hunt =
@@ -59,8 +55,8 @@ let hunt : Hunting.Hunt.hunt =
   {
     over = false;
     shooter;
-    bullet_list;
-    animal_list = init_animals 100;
+    bullet_list = init_bullets 0;
+    animal_list = init_animals 200;
     kill = 0;
     ammo = 1000;
     food = 0;
@@ -82,12 +78,12 @@ let caravan : Crossing.Caravan.caravan =
 
 let crossing =
   let open Crossing.Cross in
-  { over = false; caravan; obstacle_list = init_obstacles 10 }
+  { over = false; caravan; obstacle_list = init_obstacles 15 }
 
 let init () =
   {
-    (* game_state = Hunting; *)
-    game_state = Crossing;
+    game_state = Hunting;
+    (* game_state = Crossing; *)
     crossing;
     money = 0;
     days_passed = 0;
@@ -101,29 +97,14 @@ let init () =
     clothes = 0;
     parts = 0;
     dead = false;
-    (* kill = 0; *)
     hunt;
   }
 
+(* HUNTING *)
 let render_hunting game =
   GlClear.clear [ `color ];
-  (* [GlClear.clear] needed before every render function to clear the
-     background color *)
   Hunting.Hunt.render game;
   Glut.swapBuffers ()
-(* I don't actually know what [Glut.swapBuffers] does. I think we need
-   it after every render though. *)
-
-(* CROSSING *)
-
-let render_crossing game =
-  GlClear.clear [ `color ];
-  (* [GlClear.clear] needed before every render function to clear the
-     background color *)
-  Crossing.Cross.render game;
-  Glut.swapBuffers ()
-(* I don't actually know what [Glut.swapBuffers] does. I think we need
-   it after every render though. *)
 
 let hunt_action ~key ~x:_ ~y:_ game =
   match key with
@@ -139,23 +120,28 @@ let hunt_action ~key ~x:_ ~y:_ game =
       game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Shoot
   | _ -> ()
 
-let rec animal_ticker (game : game) ~value:_ =
-  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.MoveAnimal;
-  Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0
+(* CROSSING *)
 
-let rec bullet_ticker (game : game) ~value:_ =
-  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet;
-  Glut.timerFunc ~ms:50 ~cb:(bullet_ticker game) ~value:0
+let render_crossing game =
+  GlClear.clear [ `color ];
+  Crossing.Cross.render game;
+  Glut.swapBuffers ()
 
-let rec animal_coll_ticker (game : game) ~value:_ =
-    game.hunt <-
-      Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
-    Glut.timerFunc ~ms:100 ~cb:(animal_coll_ticker game) ~value:0
+(* let rec animal_ticker (game : game) ~value:_ = game.hunt <-
+   Hunting.Hunt.controller game.hunt Hunting.Hunt.MoveAnimal;
+   Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0 *)
 
-let init_hunt ~game =
-  Glut.specialFunc ~cb:(hunt_action game);
-  Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0;
-  Glut.timerFunc ~ms:500 ~cb:(bullet_ticker game) ~value:0
+(* let rec bullet_ticker (game : game) ~value:_ = game.hunt <-
+   Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet; Glut.timerFunc
+   ~ms:50 ~cb:(bullet_ticker game) ~value:0 *)
+
+(* let rec animal_coll_ticker (game : game) ~value:_ = game.hunt <-
+   Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
+   Glut.timerFunc ~ms:100 ~cb:(animal_coll_ticker game) ~value:0 *)
+
+(* let init_hunt ~game = Glut.specialFunc ~cb:(hunt_action game) *)
+(* Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0;
+   Glut.timerFunc ~ms:500 ~cb:(bullet_ticker game) ~value:0 *)
 
 (* let crossing_key_to_action ~key ~x ~y = match key with |
    Glut.KEY_LEFT -> Some (Crossing.Cross.Move Left) | Glut.KEY_RIGHT ->
@@ -177,23 +163,30 @@ let crossing_action ~key ~x:_ ~y:_ game =
           (Crossing.Cross.Move Right)
   | _ -> ()
 
-let rec obstacle_ticker (game : game) ~value:_ =
+let rec game_ticker (game : game) ~value:_ =
+  (* crossing functions *)
   game.crossing <-
     Crossing.Cross.controller game.crossing
       Crossing.Cross.ScrollObstacles;
-  Glut.timerFunc ~ms:20 ~cb:(obstacle_ticker game) ~value:0
-
-let rec collision_ticker (game : game) ~value:_ =
   game.crossing <-
     Crossing.Cross.controller game.crossing Crossing.Cross.Collisions;
-  Glut.timerFunc ~ms:10 ~cb:(collision_ticker game) ~value:0
+  (* hunting functions *)
+  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
+  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet;
+  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.MoveAnimal;
+  (* Glut.postRedisplay (); *)
+  Glut.timerFunc ~ms:50 ~cb:(game_ticker game) ~value:0
 
-let init_crossing ~game =
-  Glut.specialFunc ~cb:(crossing_action game);
-  Glut.timerFunc ~ms:20 ~cb:(obstacle_ticker game) ~value:0;
-  Glut.timerFunc ~ms:10 ~cb:(collision_ticker game) ~value:0
+(* let init_crossing ~game = Glut.specialFunc ~cb:(crossing_action
+   game) *)
+
+let init_game ~game = game_ticker game ~value:0
 
 let render game =
   match game.game_state with
-  | Crossing -> render_crossing game.crossing
-  | Hunting -> render_hunting game.hunt
+  | Crossing ->
+      render_crossing game.crossing;
+      Glut.specialFunc ~cb:(crossing_action game)
+  | Hunting ->
+      render_hunting game.hunt;
+      Glut.specialFunc ~cb:(hunt_action game)

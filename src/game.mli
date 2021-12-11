@@ -40,11 +40,13 @@ val render_crossing : Crossing.Cross.cross -> unit
 val init : unit -> game
 (** [init] is the initial state of a game. *)
 
-val init_hunt : game:game -> unit
+val init_game : game:game -> unit
+
+(* val init_hunt : game:game -> unit *)
 (** [init_hunt game] initializes the keyboard capture and ticker
     required by the hunting minigame specified by [game]. *)
 
-val init_crossing : game:game -> unit
+(* val init_crossing : game:game -> unit *)
 (** [init_crossing game] initializes the keyboard capture and ticker
     required by the river crossing minigame specified by [game] *)
 
@@ -52,4 +54,4 @@ val render : game -> unit
 (** [render game] renders the main game and minigames as specified by
     the game_state of [game] *)
 
-val animal_coll_ticker : game -> value:int -> unit
+(* val animal_coll_ticker : game -> value:int -> unit *)

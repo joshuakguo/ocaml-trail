@@ -3,12 +3,9 @@ type bullet = {
   mutable y : float;
 }
 
-(* let collision_area bullet = (bullet.x -. 5., bullet.y -. 5., bullet.x
-   +. 5., bullet.y +. 5.) *)
-
 let out_of_bound ~bounds =
   let x1, y1, x2, y2 = bounds in
-  fun (x, y) -> x < x1 && x > x2 && y < y1 && y > y2
+  fun (x, y) -> x < x1 || x > x2 || y < y1 || y > y2
 
 let in_bound ~bounds =
   let check = out_of_bound ~bounds in

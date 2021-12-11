@@ -5,9 +5,11 @@ type obstacle = {
 
 let collision_area obstacle =
   ( obstacle.x -. 70.,
-    obstacle.x +. 28.,
     obstacle.y -. 35.,
+    obstacle.x +. 28.,
     obstacle.y +. 35. )
+(* ( obstacle.x -. 30., obstacle.y -. 30., obstacle.x +. 30., obstacle.y
+   +. 30. ) *)
 
 let approach ~pace =
   let y = pace in
@@ -19,6 +21,9 @@ let approach ~pace =
 let render_obstacle_at ~x ~y () =
   GlMat.load_identity ();
   GlMat.translate3 (x, y, 0.);
+  (* GlDraw.begins `quads; GlDraw.color (0.6, 0.6, 0.6); List.iter
+     GlDraw.vertex2 [ (30., 30.); (30., -30.); (-30., -30.); (-30., 30.)
+     ]; *)
   GlDraw.begins `polygon;
   GlDraw.color (0.6, 0.6, 0.6);
   List.iter GlDraw.vertex2

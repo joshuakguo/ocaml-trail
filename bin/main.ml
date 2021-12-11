@@ -14,8 +14,7 @@ let init_view ~w ~h =
 let init_engine ~game ~w ~h =
   init_display ~w ~h ~title:"OCaml Trail";
   init_view ~w ~h;
-  (* Game.init_hunt ~game; *)
-  Game.init_crossing ~game;
+  Game.init_game ~game;
   Glut.displayFunc ~cb:(fun () -> Game.render game);
   Glut.mainLoop
 
