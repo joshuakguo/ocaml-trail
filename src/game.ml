@@ -56,9 +56,10 @@ let hunt : Hunting.Hunt.hunt =
     over = false;
     shooter;
     bullet_list = init_bullets 0;
-    animal_list = init_animals 200;
+    animal_list = init_animals 100;
     kill = 0;
     ammo = 1000;
+    (* random amount of ammo *)
     food = 0;
   }
 
@@ -121,7 +122,6 @@ let hunt_action ~key ~x:_ ~y:_ game =
   | _ -> ()
 
 (* CROSSING *)
-
 let render_crossing game =
   GlClear.clear [ `color ];
   Crossing.Cross.render game;
