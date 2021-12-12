@@ -48,7 +48,9 @@ let controller game = function
         | Right -> ( +. )
       in
       let coord = operator game.shooter.x 20. in
-      game.shooter.x <- min (max coord 10.) 800.;
+      game.shooter.x <-
+        (if game.over = false then min (max coord 10.) 800.
+        else game.shooter.x);
       game
   | Shoot ->
       game.bullet_list <-
@@ -93,13 +95,38 @@ let controller game = function
             | _ -> false)
           game.bullet_list;
       game.kill <- game.kill + List.length animal_collisions;
-      game.food <- game.food + (10 * game.kill);
+      game.food <- game.food + (20 * game.kill);
       game.over <- game.ammo = 0 || game.kill = 5;
+      game.bullet_list <-
+        (if game.over = true then [] else game.bullet_list);
       game
+
+let draw_text ?(font = Glut.BITMAP_HELVETICA_18) y s =
+  GlMat.load_identity ();
+  let width = float_of_int (Glut.bitmapLength ~font ~str:s) in
+  GlPix.raster_pos ~x:(400. -. (width /. 2.)) ~y ();
+  GlDraw.color (1., 1., 1.);
+  String.iter (fun c -> Glut.bitmapCharacter ~font ~c:(Char.code c)) s
 
 let render game =
   match game.over with
-  | true -> Shooter.render game.shooter
+  | true ->
+      let end_text =
+        match game.kill with
+        | 5 ->
+            Printf.sprintf
+              "You brought 100 pounds of meat back to the caravan."
+        | 0 -> Printf.sprintf "You were unable to shoot any food."
+        | _ ->
+            Printf.sprintf "You brought "
+            ^ string_of_int (20 * game.kill)
+            ^ " pounds of meat back to the caravan."
+      in
+      draw_text 262.5 end_text;
+      let continue_text =
+        Printf.sprintf "Press SPACE BAR to continue"
+      in
+      draw_text 45. continue_text
   | false ->
       Shooter.render game.shooter;
       List.iter Bullet.render game.bullet_list;
