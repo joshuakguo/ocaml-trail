@@ -160,32 +160,9 @@ let game_over game =
   let continue_text = Printf.sprintf "Press SPACE BAR to continue" in
   draw_text 45. continue_text
 
-let draw_text ?(font = Glut.BITMAP_HELVETICA_18) y s =
-  GlMat.load_identity ();
-  let width = float_of_int (Glut.bitmapLength ~font ~str:s) in
-  GlPix.raster_pos ~x:(400. -. (width /. 2.)) ~y ();
-  GlDraw.color (1., 1., 1.);
-  String.iter (fun c -> Glut.bitmapCharacter ~font ~c:(Char.code c)) s
-
 let render game =
   match game.over with
-  | true ->
-      let end_text =
-        match game.kill with
-        | 5 ->
-            Printf.sprintf
-              "You brought 100 pounds of meat back to the caravan."
-        | 0 -> Printf.sprintf "You were unable to shoot any food."
-        | _ ->
-            Printf.sprintf "You brought "
-            ^ string_of_int (20 * game.kill)
-            ^ " pounds of meat back to the caravan."
-      in
-      draw_text 262.5 end_text;
-      let continue_text =
-        Printf.sprintf "Press SPACE BAR to continue"
-      in
-      draw_text 45. continue_text
+  | true -> game_over game
   | false ->
       Shooter.render game.shooter;
       List.iter Bullet.render game.bullet_list;

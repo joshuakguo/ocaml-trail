@@ -113,7 +113,7 @@ let trail =
 
 let init () =
   {
-    game_state = Trailing;
+    game_state = Hunting;
     crossing;
     money = 0;
     days_passed = 0;
