@@ -1,6 +1,9 @@
 build:
 	dune build
 
+test:
+	OCAMLRUNPARAM=b dune exec test/main.exe
+
 clean:
 	dune clean
 
@@ -14,3 +17,6 @@ install-deps:
 zip:
 	rm -f ocaml-trail.zip
 	zip -r ocaml-trail.zip . -x@exclude.lst
+
+doc:
+	dune build @doc

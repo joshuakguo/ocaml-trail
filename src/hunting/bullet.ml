@@ -16,7 +16,7 @@ let move bullet = { x = bullet.x; y = bullet.y -. 8. }
 let render_bullet_at ~x ~y =
   GlMat.load_identity ();
   GlMat.translate3 (x, y, 0.);
-  GlDraw.color (1., 1., 1.);
+  GlDraw.color (0.6, 0.6, 0.6);
   GlDraw.begins `quads;
   List.iter GlDraw.vertex2
     [ (-5., -5.); (-5., 5.); (5., 5.); (5., -5.) ];

@@ -1,0 +1,4 @@
+(library
+ (name trailing)
+ (public_name Trailing)
+ (libraries lablgl lablTk lablgl.glut))

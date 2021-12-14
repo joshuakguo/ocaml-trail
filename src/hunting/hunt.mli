@@ -12,6 +12,7 @@ type hunt = {
   mutable kill : int;
   mutable ammo : int;
   mutable food : int;
+  mutable bullet_count : int;
 }
 (** The type of values representing the hunting mini-game. *)
 
@@ -21,10 +22,10 @@ type direction =
       (** The type of values representing the direction of movement. *)
 
 type event =
-  | MoveShooter of direction
+  | Shooter of direction
   | Shoot
   | Bullet
-  | MoveAnimal
+  | Animal
   | Collisions
       (** The type of values representing the movement of the shooter,
           bullets, and the animals in the mini-game. *)
@@ -38,7 +39,8 @@ val controller : hunt -> event -> hunt
     shooter is moved in either Left or Right. When [e] is Shoot, the a
     bullet is added to the bullet list. When [e] is Bullet, the bullets
     move by increment. When [e] is MoveAnimal, the animals are moved at
-    a constant pace across the screen. *)
+    a constant pace across the screen. When [e] is Collisions, if there
+    an animal and a bullet collide, they are removed from the screen. *)
 
 val render : hunt -> unit
 (** [render h] creates the GUI image of the shooter as a square, bullets

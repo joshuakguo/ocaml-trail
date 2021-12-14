@@ -11,13 +11,6 @@ type shooter = {
 }
 (** The type of values representing the shooter. *)
 
-(* val in_bound : float * float * float * float -> shooter -> bool *)
-(** [in_bound (x1, y1, x2, y2) s] is true if the [s] is within the
-    bounds (window) of the game and false otherwise. *)
-
-(* val move : shooter -> unit *)
-(** [move s] moves [s] horizontally by 8.*)
-
 val render : shooter -> unit
-(** [render s] creates the GUI image of the shooter as a square with
-    side length 40, centered at the coordinates defined in [s]. *)
+(** [render s] creates the GUI image of the shooter centered at the
+    coordinates defined in [s]. *)

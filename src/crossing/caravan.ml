@@ -11,11 +11,14 @@ let collision_area obstacle =
 
 let render_caravan_at ~x ~y =
   (* background *)
+  (* GlMat.load_identity (); GlMat.translate3 (400., 263., 0.); (*
+     GlMat.translate3 (400., 262.5, 0.); *) (* GlDraw.begins `polygon;
+     *) GlDraw.color (0.2, 0.4, 0.99); GlDraw.rect (-400., -261.) (400.,
+     263.); *)
   (* GlMat.load_identity (); GlMat.translate3 (400., 262.5, 0.);
      GlDraw.color (0.2, 0.4, 1.); GlDraw.begins `quads; List.iter
      GlDraw.vertex2 [ (-400., -262.5); (-400., 262.5); (400., 262.5);
      (400., -262.5) ]; GlDraw.ends (); *)
-
   (* ship *)
   GlMat.load_identity ();
   GlMat.translate3 (x, y, 0.);
@@ -26,7 +29,7 @@ let render_caravan_at ~x ~y =
   (* GlDraw.color (0.6, 0.6, 0.6); GlDraw.begins `quads; List.iter
      GlDraw.vertex2 [ (-10., -15.); (10., 15.); (-10., 15.); (10., -15.)
      ]; GlDraw.ends (); *)
-  GlDraw.color (0.25, 0.25, 0.25);
+  GlDraw.color (0.8, 0.8, 0.);
   GlDraw.begins `triangles;
   List.iter GlDraw.vertex2 [ (-40., -20.); (40., -20.); (40., 20.) ];
   List.iter GlDraw.vertex2 [ (-40., -20.); (40., -20.); (-40., 20.) ];

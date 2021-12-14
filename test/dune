@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries Game Hunting Crossing Trailing ounit2 qcheck))

@@ -1,10 +1,10 @@
 (** Representation of the game data.
 
-    This module represents the data stored in a game, the x and y
-    coordinates for the center of the caravan. It handles the rendering
-    of the caravan in the game. *)
+    This module represents the data stored in a mini-game. It handles
+    the rendering of all aspects inside of the game. *)
 
 type game_state =
+  | Trailing
   | Crossing
   | Hunting
       (** The abstract type of values representing the current state of
@@ -14,6 +14,7 @@ type game = {
   mutable game_state : game_state;
   mutable crossing : Crossing.Cross.cross;
   mutable hunt : Hunting.Hunt.hunt;
+  mutable trail : Trailing.Trail.t;
   mutable money : int;
   mutable days_passed : int;
   mutable miles_traveled : int;
@@ -28,6 +29,10 @@ type game = {
   mutable dead : bool; (* mutable kill : int; *)
 }
 (** The abstract type of values representing a game. *)
+
+val draw_text : ?font:Glut.font_t -> float -> string -> unit
+(** [draw_text font y s] renders the string [s] as text in the window
+    centered at [y] with font [font]. *)
 
 val render_hunting : Hunting.Hunt.hunt -> unit
 (** [render_hunting game] renders the hunting minigame specified by
@@ -51,7 +56,5 @@ val init_game : game:game -> unit
     required by the river crossing minigame specified by [game] *)
 
 val render : game -> unit
-(** [render game] renders the main game and minigames as specified by
-    the game_state of [game] *)
-
-(* val animal_coll_ticker : game -> value:int -> unit *)
+(** [render game] renders the games as specified by the game_state of
+    [game] *)

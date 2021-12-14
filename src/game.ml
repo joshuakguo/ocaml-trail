@@ -1,5 +1,6 @@
 type game_state =
-  (* | Home | Trail | Hunting *)
+  (* | Home | Trail *)
+  | Trailing
   | Crossing
   | Hunting
 (* | End *)
@@ -8,6 +9,7 @@ type game = {
   mutable game_state : game_state;
   mutable crossing : Crossing.Cross.cross;
   mutable hunt : Hunting.Hunt.hunt;
+  mutable trail : Trailing.Trail.t;
   mutable money : int;
   mutable days_passed : int;
   mutable miles_traveled : int;
@@ -21,6 +23,8 @@ type game = {
   mutable parts : int;
   mutable dead : bool;
 }
+
+let input_string = ref ""
 
 (* type profile = | Farmer of game | Carpenter of game | Banker of
    game *)
@@ -47,7 +51,7 @@ let rec init_animals x : Hunting.Animals.animal list =
   match x with
   | 0 -> []
   | _ ->
-      { x = -20000. +. float 20700.; y = 0. +. float 400. }
+      { x = -8000. +. float 10000.; y = 0. +. float 400. }
       :: init_animals (x - 1)
 
 let hunt : Hunting.Hunt.hunt =
@@ -56,10 +60,12 @@ let hunt : Hunting.Hunt.hunt =
     over = false;
     shooter;
     bullet_list = init_bullets 0;
-    animal_list = init_animals 200;
+    animal_list = init_animals 100;
     kill = 0;
-    ammo = 1000;
+    ammo = 5;
+    (* random amount of ammo *)
     food = 0;
+    bullet_count = 0;
   }
 
 let rec init_obstacles x : Crossing.Obstacle.obstacle list =
@@ -78,12 +84,36 @@ let caravan : Crossing.Caravan.caravan =
 
 let crossing =
   let open Crossing.Cross in
-  { over = false; caravan; obstacle_list = init_obstacles 15 }
+  {
+    over = false;
+    caravan;
+    obstacle_list = init_obstacles 15;
+    win = false;
+    camels = 100;
+    parts = 100 (* random number of camels and parts *);
+  }
+
+let trail =
+  let open Trailing.Trail in
+  {
+    money = 0;
+    days_passed = 0;
+    miles_traveled = 0;
+    pace = 50;
+    health = 80;
+    camels = 0;
+    food = 0;
+    ration = 0;
+    ammo = 0;
+    clothes = 0;
+    parts = 0;
+    dead = false;
+    input_string = "";
+  }
 
 let init () =
   {
-    game_state = Hunting;
-    (* game_state = Crossing; *)
+    game_state = Trailing;
     crossing;
     money = 0;
     days_passed = 0;
@@ -98,11 +128,20 @@ let init () =
     parts = 0;
     dead = false;
     hunt;
+    trail;
   }
+
+let draw_text ?(font = Glut.BITMAP_HELVETICA_18) y s =
+  GlMat.load_identity ();
+  let width = float_of_int (Glut.bitmapLength ~font ~str:s) in
+  GlPix.raster_pos ~x:(400. -. (width /. 2.)) ~y ();
+  GlDraw.color (1., 1., 1.);
+  String.iter (fun c -> Glut.bitmapCharacter ~font ~c:(Char.code c)) s
 
 (* HUNTING *)
 let render_hunting game =
   GlClear.clear [ `color ];
+  GlClear.color (0.2, 0.5, 0.2);
   Hunting.Hunt.render game;
   Glut.swapBuffers ()
 
@@ -110,46 +149,20 @@ let hunt_action ~key ~x:_ ~y:_ game =
   match key with
   | Glut.KEY_LEFT ->
       game.hunt <-
-        Hunting.Hunt.controller game.hunt
-          (Hunting.Hunt.MoveShooter Left)
+        Hunting.Hunt.controller game.hunt (Hunting.Hunt.Shooter Left)
   | Glut.KEY_RIGHT ->
       game.hunt <-
-        Hunting.Hunt.controller game.hunt
-          (Hunting.Hunt.MoveShooter Right)
+        Hunting.Hunt.controller game.hunt (Hunting.Hunt.Shooter Right)
   | Glut.(KEY_OTHER 32) ->
       game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Shoot
   | _ -> ()
 
 (* CROSSING *)
-
 let render_crossing game =
   GlClear.clear [ `color ];
+  GlClear.color (0.35, 0.7, 1.);
   Crossing.Cross.render game;
   Glut.swapBuffers ()
-
-(* let rec animal_ticker (game : game) ~value:_ = game.hunt <-
-   Hunting.Hunt.controller game.hunt Hunting.Hunt.MoveAnimal;
-   Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0 *)
-
-(* let rec bullet_ticker (game : game) ~value:_ = game.hunt <-
-   Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet; Glut.timerFunc
-   ~ms:50 ~cb:(bullet_ticker game) ~value:0 *)
-
-(* let rec animal_coll_ticker (game : game) ~value:_ = game.hunt <-
-   Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
-   Glut.timerFunc ~ms:100 ~cb:(animal_coll_ticker game) ~value:0 *)
-
-(* let init_hunt ~game = Glut.specialFunc ~cb:(hunt_action game) *)
-(* Glut.timerFunc ~ms:500 ~cb:(animal_ticker game) ~value:0;
-   Glut.timerFunc ~ms:500 ~cb:(bullet_ticker game) ~value:0 *)
-
-(* let crossing_key_to_action ~key ~x ~y = match key with |
-   Glut.KEY_LEFT -> Some (Crossing.Cross.Move Left) | Glut.KEY_RIGHT ->
-   Some (Crossing.Cross.Move Right) | _ -> None
-
-   let crossing_controller game fun_action ~key ~x ~y = match fun_action
-   ~key ~x ~y with | Some action -> game := Crossing.Cross.controller
-   !game action | None -> () *)
 
 let crossing_action ~key ~x:_ ~y:_ game =
   match key with
@@ -163,6 +176,54 @@ let crossing_action ~key ~x:_ ~y:_ game =
           (Crossing.Cross.Move Right)
   | _ -> ()
 
+let render_trailing game =
+  GlClear.clear [ `color ];
+  GlClear.color (0., 0., 0.);
+  Trailing.Trail.render game;
+  Glut.swapBuffers ()
+
+let trailing_action ~key ~x:_ ~y:_ game =
+  match key with
+  | 48 ->
+      input_string := !input_string ^ "0";
+      ()
+  | 49 ->
+      input_string := !input_string ^ "1";
+      ()
+  | 50 ->
+      input_string := !input_string ^ "2";
+      ()
+  | 41 ->
+      input_string := !input_string ^ "3";
+      ()
+  | 52 ->
+      input_string := !input_string ^ "4";
+      ()
+  | 53 ->
+      input_string := !input_string ^ "5";
+      ()
+  | 54 ->
+      input_string := !input_string ^ "6";
+      ()
+  | 55 ->
+      input_string := !input_string ^ "7";
+      ()
+  | 56 ->
+      input_string := !input_string ^ "8";
+      ()
+  | 57 ->
+      input_string := !input_string ^ "9";
+      ()
+  | 257 ->
+      game.trail.input_string <- !input_string;
+      input_string := "";
+      ()
+  | 32 ->
+      game.trail <-
+        Trailing.Trail.controller game.trail Trailing.Trail.Advance
+  | _ -> ()
+(* 257 = enter, 32 = space *)
+
 let rec game_ticker (game : game) ~value:_ =
   (* crossing functions *)
   game.crossing <-
@@ -170,10 +231,12 @@ let rec game_ticker (game : game) ~value:_ =
       Crossing.Cross.ScrollObstacles;
   game.crossing <-
     Crossing.Cross.controller game.crossing Crossing.Cross.Collisions;
+  game.crossing <-
+    Crossing.Cross.controller game.crossing Crossing.Cross.Finished;
   (* hunting functions *)
   game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Collisions;
   game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Bullet;
-  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.MoveAnimal;
+  game.hunt <- Hunting.Hunt.controller game.hunt Hunting.Hunt.Animal;
   (* Glut.postRedisplay (); *)
   Glut.timerFunc ~ms:50 ~cb:(game_ticker game) ~value:0
 
@@ -186,7 +249,26 @@ let render game =
   match game.game_state with
   | Crossing ->
       render_crossing game.crossing;
+      game.camels <- game.crossing.camels;
+      game.parts <- game.crossing.parts;
       Glut.specialFunc ~cb:(crossing_action game)
   | Hunting ->
       render_hunting game.hunt;
+      game.ammo <- game.hunt.ammo;
+      game.food <- game.hunt.food;
       Glut.specialFunc ~cb:(hunt_action game)
+  | Trailing ->
+      render_trailing game.trail;
+      game.money <- game.trail.money;
+      game.days_passed <- game.trail.days_passed;
+      game.miles_traveled <- game.trail.miles_traveled;
+      game.pace <- game.trail.pace;
+      game.health <- game.trail.health;
+      game.camels <- game.trail.camels;
+      game.food <- game.trail.food;
+      game.ration <- game.trail.ration;
+      game.ammo <- game.trail.ammo;
+      game.clothes <- game.trail.clothes;
+      game.parts <- game.trail.parts;
+      game.dead <- game.trail.dead;
+      Glut.keyboardFunc ~cb:(trailing_action game)

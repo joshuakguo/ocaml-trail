@@ -27,5 +27,5 @@ val approach : pace:float -> animal -> animal
     tick.*)
 
 val render : animal -> unit
-(** [render a] creates the GUI image of the animal as a square with side
-    length 10 and color__, centered at the coordinates defined in [a]. *)
+(** [render a] creates the GUI image of the animal centered at the
+    coordinates defined in [a]. *)
